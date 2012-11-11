@@ -41,9 +41,7 @@ import org.slf4j.LoggerFactory;
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -60,9 +58,9 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.DateUtils;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
+import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.Block;
 import com.google.bitcoin.core.BlockChain;
@@ -76,7 +74,6 @@ import com.google.bitcoin.core.StoredBlock;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.Wallet.BalanceType;
 import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.discovery.DnsDiscovery;
 import com.google.bitcoin.discovery.PeerDiscovery;
@@ -87,11 +84,9 @@ import com.google.bitcoin.store.SPVBlockStore;
 
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.WalletApplication;
-import de.schildbach.wallet.WalletBalanceWidgetProvider;
 import de.schildbach.wallet.ui.WalletActivity;
 import de.schildbach.wallet.util.CrashReporter;
 import de.schildbach.wallet.util.GenericUtils;
-import de.schildbach.wallet.util.ThrottlingWalletChangeListener;
 import de.schildbach.wallet.util.WalletUtils;
 import de.schildbach.wallet_test.R;
 
@@ -131,18 +126,10 @@ public class BlockchainServiceImpl extends android.app.Service implements Blockc
 	private static final int IDLE_BLOCK_TIMEOUT_MIN = 2;
 	private static final int IDLE_TRANSACTION_TIMEOUT_MIN = 9;
 	private static final int MAX_HISTORY_SIZE = Math.max(IDLE_TRANSACTION_TIMEOUT_MIN, IDLE_BLOCK_TIMEOUT_MIN);
-	private static final long APPWIDGET_THROTTLE_MS = DateUtils.SECOND_IN_MILLIS;
-
 	private static final Logger log = LoggerFactory.getLogger(BlockchainServiceImpl.class);
 
-	private final WalletEventListener walletEventListener = new ThrottlingWalletChangeListener(APPWIDGET_THROTTLE_MS)
+	private final WalletEventListener walletEventListener = new AbstractWalletEventListener()
 	{
-		@Override
-		public void onThrottledWalletChanged()
-		{
-			notifyWidgets();
-		}
-
 		@Override
 		public void onCoinsReceived(final Wallet wallet, final Transaction tx, final BigInteger prevBalance, final BigInteger newBalance)
 		{
@@ -862,22 +849,6 @@ public class BlockchainServiceImpl extends android.app.Service implements Blockc
 	private void removeBroadcastBlockchainState()
 	{
 		removeStickyBroadcast(new Intent(ACTION_BLOCKCHAIN_STATE));
-	}
-
-	public void notifyWidgets()
-	{
-		final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-
-		final ComponentName providerName = new ComponentName(this, WalletBalanceWidgetProvider.class);
-		final int[] appWidgetIds = appWidgetManager.getAppWidgetIds(providerName);
-
-		if (appWidgetIds.length > 0)
-		{
-			final Wallet wallet = application.getWallet();
-			final BigInteger balance = wallet.getBalance(BalanceType.ESTIMATED);
-
-			WalletBalanceWidgetProvider.updateWidgets(this, appWidgetManager, appWidgetIds, balance);
-		}
 	}
 
 	private void maybeRotateKeys()
