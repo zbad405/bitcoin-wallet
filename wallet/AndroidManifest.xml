@@ -4,7 +4,7 @@
 	package="de.schildbach.wallet_test"
 	android:installLocation="internalOnly"
 	android:versionCode="148"
-	android:versionName="3.27-test" >
+	android:versionName="3.27-blackberry-test" >
 
 	<uses-sdk
 		android:minSdkVersion="10"
