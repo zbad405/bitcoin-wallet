@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionOutput;
@@ -175,7 +177,20 @@ public class CrashReporter
 		report.append("Screen Layout: size " + (config.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) + " long "
 				+ (config.screenLayout & Configuration.SCREENLAYOUT_LONG_MASK) + "\n");
 		report.append("Display Metrics: " + res.getDisplayMetrics() + "\n");
-		report.append("Memory Class: " + activityManager.getMemoryClass() + "\n");
+		report.append("Memory Class: " + activityManager.getMemoryClass()
+				+ (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? "/" + largeMemoryClass(activityManager) : "") + "\n");
+	}
+
+	private static int largeMemoryClass(final ActivityManager activityManager)
+	{
+		try
+		{
+			return (Integer) ActivityManager.class.getMethod("getLargeMemoryClass").invoke(activityManager);
+		}
+		catch (final Exception x)
+		{
+			throw new RuntimeException(x);
+		}
 	}
 
 	public static void appendApplicationInfo(final Appendable report, final WalletApplication application) throws IOException
