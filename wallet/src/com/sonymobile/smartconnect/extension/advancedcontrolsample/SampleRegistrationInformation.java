@@ -97,9 +97,7 @@ public class SampleRegistrationInformation extends RegistrationInformation {
     @Override
     public ContentValues getExtensionRegistrationConfiguration() {
         Log.d(SampleExtensionService.LOG_TAG, "getExtensionRegistrationConfiguration");
-        String iconHostapp = ExtensionUtils.getUriString(mContext, R.drawable.icon);
-        String iconExtension = ExtensionUtils
-                .getUriString(mContext, R.drawable.icon_extension);
+        String icon = ExtensionUtils.getUriString(mContext, R.drawable.app_icon);
 
         ContentValues values = new ContentValues();
 
@@ -107,12 +105,12 @@ public class SampleRegistrationInformation extends RegistrationInformation {
                 SamplePreferenceActivity.class.getName());
         values.put(Registration.ExtensionColumns.CONFIGURATION_TEXT,
                 mContext.getString(R.string.configuration_text));
-        values.put(Registration.ExtensionColumns.NAME, mContext.getString(R.string.extension_name));
+        values.put(Registration.ExtensionColumns.NAME, mContext.getString(R.string.app_name));
         values.put(Registration.ExtensionColumns.EXTENSION_KEY,
                 SampleExtensionService.EXTENSION_KEY);
-        values.put(Registration.ExtensionColumns.HOST_APP_ICON_URI, iconHostapp);
-        values.put(Registration.ExtensionColumns.EXTENSION_ICON_URI, iconExtension);
-        values.put(Registration.ExtensionColumns.EXTENSION_48PX_ICON_URI, iconExtension);
+        values.put(Registration.ExtensionColumns.HOST_APP_ICON_URI, icon);
+        values.put(Registration.ExtensionColumns.EXTENSION_ICON_URI, icon);
+        values.put(Registration.ExtensionColumns.EXTENSION_48PX_ICON_URI, icon);
         values.put(Registration.ExtensionColumns.NOTIFICATION_API_VERSION,
                 getRequiredNotificationApiVersion());
         values.put(Registration.ExtensionColumns.PACKAGE_NAME, mContext.getPackageName());
