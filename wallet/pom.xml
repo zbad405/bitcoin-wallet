@@ -99,6 +99,19 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.sonyericsson.extras.liveware</groupId>
+			<artifactId>extension-sdk</artifactId>
+			<version>3.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sonyericsson.extras.liveware</groupId>
+			<artifactId>extension-util</artifactId>
+			<version>3.0-SNAPSHOT</version>
+			<type>apklib</type>
+		</dependency>
+
 	</dependencies>
 
 	<profiles>
