@@ -21,6 +21,7 @@
 	<uses-permission android:name="android.permission.BROADCAST_STICKY" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-permission android:name="android.permission.BLUETOOTH" />
+	<uses-permission android:name="com.sonyericsson.extras.liveware.aef.EXTENSION_PERMISSION" />
 
 	<uses-feature
 		android:name="android.hardware.touchscreen"
@@ -193,6 +194,53 @@
 				<action android:name="android.intent.action.PACKAGE_REPLACED" />
 
 				<data android:scheme="package" />
+			</intent-filter>
+		</receiver>
+
+		<activity
+			android:name="com.sonymobile.smartconnect.extension.advancedcontrolsample.SamplePreferenceActivity"
+			android:label="@string/preference_activity_title" >
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
+
+		<service android:name="com.sonymobile.smartconnect.extension.advancedcontrolsample.SampleExtensionService" />
+
+		<receiver android:name="com.sonymobile.smartconnect.extension.advancedcontrolsample.ExtensionReceiver" >
+			<intent-filter>
+
+				<!-- Generic extension intents. -->
+				<action android:name="com.sonyericsson.extras.liveware.aef.registration.EXTENSION_REGISTER_REQUEST" />
+				<action android:name="com.sonyericsson.extras.liveware.aef.registration.ACCESSORY_CONNECTION" />
+				<action android:name="android.intent.action.LOCALE_CHANGED" />
+
+				<!-- Notification intents -->
+				<action android:name="com.sonyericsson.extras.liveware.aef.notification.VIEW_EVENT_DETAIL" />
+				<action android:name="com.sonyericsson.extras.liveware.aef.notification.REFRESH_REQUEST" />
+
+				<!-- Widget intents -->
+				<action android:name="com.sonyericsson.extras.aef.widget.START_REFRESH_IMAGE_REQUEST" />
+				<action android:name="com.sonyericsson.extras.aef.widget.STOP_REFRESH_IMAGE_REQUEST" />
+				<action android:name="com.sonyericsson.extras.aef.widget.ONTOUCH" />
+				<action android:name="com.sonyericsson.extras.liveware.extension.util.widget.scheduled.refresh" />
+
+				<!-- Control intents -->
+				<action android:name="com.sonyericsson.extras.aef.control.START" />
+				<action android:name="com.sonyericsson.extras.aef.control.STOP" />
+				<action android:name="com.sonyericsson.extras.aef.control.PAUSE" />
+				<action android:name="com.sonyericsson.extras.aef.control.RESUME" />
+				<action android:name="com.sonyericsson.extras.aef.control.ERROR" />
+				<action android:name="com.sonyericsson.extras.aef.control.KEY_EVENT" />
+				<action android:name="com.sonyericsson.extras.aef.control.TOUCH_EVENT" />
+				<action android:name="com.sonyericsson.extras.aef.control.SWIPE_EVENT" />
+				<action android:name="com.sonyericsson.extras.aef.control.OBJECT_CLICK_EVENT" />
+				<action android:name="com.sonyericsson.extras.aef.control.LIST_REFERESH_REQUEST" />
+				<action android:name="com.sonyericsson.extras.aef.control.LIST_REQUEST_ITEM" />
+				<action android:name="com.sonyericsson.extras.aef.control.LIST_ITEM_CLICK" />
+				<action android:name="com.sonyericsson.extras.aef.control.LIST_ITEM_SELECTED" />
+				<action android:name="com.sonyericsson.extras.aef.control.MENU_ITEM_SELECTED" />
+				<action android:name="com.sonyericsson.extras.aef.control.MENU_SHOW" />
 			</intent-filter>
 		</receiver>
 	</application>
