@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="@dimen/smart_watch_2_control_width"
+	android:layout_height="@dimen/smart_watch_2_control_height"
+	android:background="@color/bg_dark" >
+
+	<ImageView
+		android:id="@+id/smartwatch_balance_thumbnail"
+		android:layout_width="48px"
+		android:layout_height="48px"
+		android:layout_alignParentLeft="true"
+		android:layout_centerVertical="true"
+		android:src="@drawable/app_icon" />
+
+	<TextView
+		android:id="@+id/smartwatch_balance_title"
+		android:layout_width="@dimen/smart_watch_2_control_width"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@+id/smartwatch_balance_thumbnail"
+		android:paddingLeft="8px"
+		android:text="BTC"
+		android:textColor="@android:color/black"
+		android:textSize="32px" />
+
+	<TextView
+		android:id="@+id/smartwatch_balance_body"
+		android:layout_width="@dimen/smart_watch_2_control_width"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/smartwatch_balance_title"
+		android:layout_toRightOf="@+id/smartwatch_balance_thumbnail"
+		android:paddingLeft="8px"
+		android:textColor="@android:color/black"
+		android:textSize="36px" />
+
+</RelativeLayout>

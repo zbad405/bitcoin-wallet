@@ -39,7 +39,6 @@ import android.util.Log;
 import com.sonyericsson.extras.liveware.aef.registration.Registration;
 import com.sonyericsson.extras.liveware.extension.util.ExtensionUtils;
 import com.sonyericsson.extras.liveware.extension.util.registration.RegistrationInformation;
-import com.sonymobile.smartconnect.extension.advancedcontrolsample.controls.ControlManagerSmartWatch2;
 
 import de.schildbach.wallet_test.R;
 
@@ -104,7 +103,7 @@ public class SampleRegistrationInformation extends RegistrationInformation {
         values.put(Registration.ExtensionColumns.CONFIGURATION_ACTIVITY,
                 SamplePreferenceActivity.class.getName());
         values.put(Registration.ExtensionColumns.CONFIGURATION_TEXT,
-                mContext.getString(R.string.configuration_text));
+                "configuration");
         values.put(Registration.ExtensionColumns.NAME, mContext.getString(R.string.app_name));
         values.put(Registration.ExtensionColumns.EXTENSION_KEY,
                 SampleExtensionService.EXTENSION_KEY);
@@ -117,15 +116,4 @@ public class SampleRegistrationInformation extends RegistrationInformation {
 
         return values;
     }
-
-    @Override
-    public boolean isDisplaySizeSupported(int width, int height) {
-        Log.d(SampleExtensionService.LOG_TAG,
-                "isDisplaySizeSupported: "
-                        + ((width == ControlManagerSmartWatch2.getSupportedControlWidth(mContext) && height == ControlManagerSmartWatch2
-                                .getSupportedControlHeight(mContext))));
-        return ((width == ControlManagerSmartWatch2.getSupportedControlWidth(mContext) && height == ControlManagerSmartWatch2
-                .getSupportedControlHeight(mContext)));
-    }
-
 }

@@ -12,6 +12,7 @@
 	<color name="bg_less_bright">#ffe8e8f0</color>
 	<color name="bg_panel">#ffd8d8e0</color>
 	<color name="bg_form">#ffe8e8f0</color>
+	<color name="bg_dark">#ff808080</color>
 
 	<!-- scanner -->
 	<color name="scan_mask">#60000000</color>

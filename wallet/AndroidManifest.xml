@@ -197,9 +197,7 @@
 			</intent-filter>
 		</receiver>
 
-		<activity
-			android:name="com.sonymobile.smartconnect.extension.advancedcontrolsample.SamplePreferenceActivity"
-			android:label="@string/preference_activity_title" >
+		<activity android:name="com.sonymobile.smartconnect.extension.advancedcontrolsample.SamplePreferenceActivity" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
