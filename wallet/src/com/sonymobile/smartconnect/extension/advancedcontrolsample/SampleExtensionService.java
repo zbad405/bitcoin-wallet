@@ -96,12 +96,7 @@ public class SampleExtensionService extends ExtensionService {
                     "Service: Advanced features supported, returning SmartWatch2 extension control manager");
             // return new ControlManagerSmartWatch2(this, hostAppPackageName);
 
-            final WalletApplication application = (WalletApplication) getApplication();
-            final Address selectedAddress = application.determineSelectedAddress();
-            final String addressStr = BitcoinURI.convertToBitcoinURI(selectedAddress, null, null, null);
-			final Bitmap qrCodeBitmap = Qr.bitmap(addressStr, 180);
-
-            return new QrCodeExtension(application, hostAppPackageName, qrCodeBitmap);
+            return new QrCodeExtension((WalletApplication) getApplication(), hostAppPackageName);
         } else {
             Log.d(SampleExtensionService.LOG_TAG,
                     "Service: Advanced features not supported, exiting");
