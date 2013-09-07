@@ -32,13 +32,19 @@ Copyright (c) 2011-2013, Sony Mobile Communications AB
 
 package com.sonymobile.smartconnect.extension.advancedcontrolsample;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.google.bitcoin.core.Address;
+import com.google.bitcoin.uri.BitcoinURI;
 import com.sonyericsson.extras.liveware.extension.util.ExtensionService;
 import com.sonyericsson.extras.liveware.extension.util.control.ControlExtension;
 import com.sonyericsson.extras.liveware.extension.util.registration.DeviceInfoHelper;
 import com.sonyericsson.extras.liveware.extension.util.registration.RegistrationInformation;
-import com.sonymobile.smartconnect.extension.advancedcontrolsample.controls.ControlManagerSmartWatch2;
+import com.sonymobile.smartconnect.extension.advancedcontrolsample.controls.QrCodeExtension;
+
+import de.schildbach.wallet.WalletApplication;
+import de.schildbach.wallet.util.Qr;
 
 /**
  * The Sample Extension Service handles registration and keeps track of all
@@ -88,7 +94,14 @@ public class SampleExtensionService extends ExtensionService {
         if (advancedFeaturesSupported) {
             Log.d(SampleExtensionService.LOG_TAG,
                     "Service: Advanced features supported, returning SmartWatch2 extension control manager");
-            return new ControlManagerSmartWatch2(this, hostAppPackageName);
+            // return new ControlManagerSmartWatch2(this, hostAppPackageName);
+
+            final WalletApplication application = (WalletApplication) getApplication();
+            final Address selectedAddress = application.determineSelectedAddress();
+            final String addressStr = BitcoinURI.convertToBitcoinURI(selectedAddress, null, null, null);
+			final Bitmap qrCodeBitmap = Qr.bitmap(addressStr, 180);
+
+            return new QrCodeExtension(application, hostAppPackageName, qrCodeBitmap);
         } else {
             Log.d(SampleExtensionService.LOG_TAG,
                     "Service: Advanced features not supported, exiting");

@@ -65,7 +65,7 @@ public class Qr
 				final int offset = y * width;
 				for (int x = 0; x < width; x++)
 				{
-					pixels[offset + x] = result.get(x, y) ? Color.BLACK : Color.TRANSPARENT;
+					pixels[offset + x] = result.get(x, y) ? Color.BLACK : Color.WHITE;
 				}
 			}
 
