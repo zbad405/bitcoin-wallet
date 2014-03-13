@@ -15,13 +15,13 @@
 		<version>1</version>
 	</parent>
 
-	<!-- Depend on bitcoinj -->
+	<!-- Depend on bitcoinj 
 	<repositories>
 		<repository>
 			<id>bitcoinj</id>
 			<url>http://distribution.bitcoinj.googlecode.com/git/releases/</url>
 		</repository>
-	</repositories>
+	</repositories> -->
 
 	<dependencies>
 
@@ -60,9 +60,8 @@
 		<!-- com.google.bitcoin.* -->
 		<dependency>
 			<groupId>com.google</groupId>
-			<artifactId>bitcoinj</artifactId>
-			<version>0.10.3</version>
-			<scope>compile</scope>
+			<artifactId>zetacoinj</artifactId>
+            		<version>0.12-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- de.schildbach.wallet.integration.android.* -->
