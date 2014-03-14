@@ -17,14 +17,15 @@
 
 package de.schildbach.wallet.ui;
 
-import javax.annotation.Nonnull;
-
 import android.os.Handler;
 import android.os.Looper;
 
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.Wallet.SendRequest;
+import com.google.zetacoin.core.InsufficientMoneyException;
+import com.google.zetacoin.core.Transaction;
+import com.google.zetacoin.core.Wallet;
+import com.google.zetacoin.core.Wallet.SendRequest;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Andreas Schildbach
@@ -49,19 +50,24 @@ public abstract class SendCoinsOfflineTask
 			@Override
 			public void run()
 			{
-				final Transaction transaction = wallet.sendCoinsOffline(sendRequest); // can take long
+                final Transaction transaction; // can take long
+                try {
+                    transaction = wallet.sendCoinsOffline(sendRequest);
 
-				callbackHandler.post(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						if (transaction != null)
-							onSuccess(transaction);
-						else
-							onFailure();
-					}
-				});
+                    callbackHandler.post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            if (transaction != null)
+                                onSuccess(transaction);
+                            else
+                                onFailure();
+                        }
+                    });
+                } catch (InsufficientMoneyException e) {
+                    e.printStackTrace();
+                }
 			}
 		});
 	}
