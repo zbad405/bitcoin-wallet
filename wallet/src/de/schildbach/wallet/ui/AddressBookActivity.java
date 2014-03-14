@@ -30,8 +30,8 @@ import android.support.v4.view.ViewPager;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.ECKey;
+import com.google.zetacoin.core.Address;
+import com.google.zetacoin.core.ECKey;
 
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.util.ViewPagerTabs;

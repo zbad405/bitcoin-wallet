@@ -19,9 +19,9 @@ package de.schildbach.wallet.ui;
 
 import javax.annotation.Nonnull;
 
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.VerificationException;
-import com.google.bitcoin.core.Wallet;
+import com.google.zetacoin.core.Transaction;
+import com.google.zetacoin.core.VerificationException;
+import com.google.zetacoin.core.Wallet;
 
 import de.schildbach.wallet.WalletApplication;
 

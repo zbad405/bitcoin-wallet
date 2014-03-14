@@ -25,8 +25,8 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.Transaction;
+import com.google.zetacoin.core.Address;
+import com.google.zetacoin.core.Transaction;
 
 import de.schildbach.wallet.ui.InputParser.StringInputParser;
 

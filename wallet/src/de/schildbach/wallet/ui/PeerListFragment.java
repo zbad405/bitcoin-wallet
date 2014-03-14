@@ -46,8 +46,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.google.bitcoin.core.Peer;
-import com.google.bitcoin.core.VersionMessage;
+import com.google.zetacoin.core.Peer;
+import com.google.zetacoin.core.VersionMessage;
 
 import de.schildbach.wallet.service.BlockchainService;
 import de.schildbach.wallet.service.BlockchainServiceImpl;

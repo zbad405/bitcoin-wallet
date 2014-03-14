@@ -32,7 +32,7 @@ import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.google.bitcoin.core.Transaction;
+import com.google.zetacoin.core.Transaction;
 
 import de.schildbach.wallet.util.Bluetooth;
 

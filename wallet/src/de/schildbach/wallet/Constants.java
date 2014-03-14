@@ -24,9 +24,9 @@ import java.nio.charset.Charset;
 import android.os.Environment;
 import android.text.format.DateUtils;
 
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.params.MainNetParams;
-import com.google.bitcoin.params.TestNet3Params;
+import com.google.zetacoin.core.NetworkParameters;
+import com.google.zetacoin.params.MainNetParams;
+import com.google.zetacoin.params.TestNet3Params;
 
 import de.schildbach.wallet_test.R;
 

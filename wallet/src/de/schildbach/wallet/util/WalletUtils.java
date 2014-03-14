@@ -46,17 +46,17 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.DumpedPrivateKey;
-import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.ScriptException;
-import com.google.bitcoin.core.Sha256Hash;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.TransactionInput;
-import com.google.bitcoin.core.TransactionOutput;
-import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.script.Script;
+import com.google.zetacoin.core.Address;
+import com.google.zetacoin.core.AddressFormatException;
+import com.google.zetacoin.core.DumpedPrivateKey;
+import com.google.zetacoin.core.ECKey;
+import com.google.zetacoin.core.ScriptException;
+import com.google.zetacoin.core.Sha256Hash;
+import com.google.zetacoin.core.Transaction;
+import com.google.zetacoin.core.TransactionInput;
+import com.google.zetacoin.core.TransactionOutput;
+import com.google.zetacoin.core.Wallet;
+import com.google.zetacoin.script.Script;
 
 import de.schildbach.wallet.Constants;
 

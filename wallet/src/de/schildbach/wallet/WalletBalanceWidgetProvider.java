@@ -32,8 +32,8 @@ import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.widget.RemoteViews;
 
-import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.Wallet.BalanceType;
+import com.google.zetacoin.core.Wallet;
+import com.google.zetacoin.core.Wallet.BalanceType;
 
 import de.schildbach.wallet.ui.RequestCoinsActivity;
 import de.schildbach.wallet.ui.SendCoinsActivity;

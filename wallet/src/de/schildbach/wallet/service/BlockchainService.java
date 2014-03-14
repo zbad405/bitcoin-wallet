@@ -21,8 +21,8 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 
-import com.google.bitcoin.core.Peer;
-import com.google.bitcoin.core.StoredBlock;
+import com.google.zetacoin.core.Peer;
+import com.google.zetacoin.core.StoredBlock;
 
 import de.schildbach.wallet_test.R;
 

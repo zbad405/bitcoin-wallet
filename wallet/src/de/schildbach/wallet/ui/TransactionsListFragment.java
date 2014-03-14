@@ -17,19 +17,6 @@
 
 package de.schildbach.wallet.ui;
 
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -59,12 +46,26 @@ import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.ScriptException;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.Transaction.Purpose;
-import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
-import com.google.bitcoin.core.Wallet;
+import com.google.zetacoin.core.Address;
+import com.google.zetacoin.core.ScriptException;
+import com.google.zetacoin.core.Transaction;
+import com.google.zetacoin.core.Transaction.Purpose;
+import com.google.zetacoin.core.TransactionConfidence.ConfidenceType;
+import com.google.zetacoin.core.Wallet;
+import com.google.zetacoin.script.Script;
+
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import de.schildbach.wallet.AddressBookProvider;
 import de.schildbach.wallet.Constants;
@@ -361,7 +362,12 @@ public class TransactionsListFragment extends SherlockListFragment implements Lo
 		{
 			adapter.notifyDataSetChanged();
 		}
-	};
+
+        @Override
+        public void onScriptsAdded(Wallet wallet, List<Script> scripts) {
+
+        }
+    };
 
 	private static class TransactionsLoader extends AsyncTaskLoader<List<Transaction>>
 	{
@@ -430,7 +436,12 @@ public class TransactionsListFragment extends SherlockListFragment implements Lo
 			{
 				forceLoad();
 			}
-		};
+
+            @Override
+            public void onScriptsAdded(Wallet wallet, List<Script> scripts) {
+
+            }
+        };
 
 		private static final Comparator<Transaction> TRANSACTION_COMPARATOR = new Comparator<Transaction>()
 		{

@@ -54,11 +54,11 @@ import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.bitcoin.core.Block;
-import com.google.bitcoin.core.Sha256Hash;
-import com.google.bitcoin.core.StoredBlock;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.Wallet;
+import com.google.zetacoin.core.Block;
+import com.google.zetacoin.core.Sha256Hash;
+import com.google.zetacoin.core.StoredBlock;
+import com.google.zetacoin.core.Transaction;
+import com.google.zetacoin.core.Wallet;
 
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.WalletApplication;

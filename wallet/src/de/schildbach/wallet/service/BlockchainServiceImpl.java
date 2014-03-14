@@ -17,27 +17,6 @@
 
 package de.schildbach.wallet.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -60,28 +39,50 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.DateUtils;
 
-import com.google.bitcoin.core.AbstractPeerEventListener;
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.Block;
-import com.google.bitcoin.core.BlockChain;
-import com.google.bitcoin.core.CheckpointManager;
-import com.google.bitcoin.core.Peer;
-import com.google.bitcoin.core.PeerEventListener;
-import com.google.bitcoin.core.PeerGroup;
-import com.google.bitcoin.core.ScriptException;
-import com.google.bitcoin.core.Sha256Hash;
-import com.google.bitcoin.core.StoredBlock;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
-import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.Wallet.BalanceType;
-import com.google.bitcoin.core.WalletEventListener;
-import com.google.bitcoin.discovery.DnsDiscovery;
-import com.google.bitcoin.discovery.PeerDiscovery;
-import com.google.bitcoin.discovery.PeerDiscoveryException;
-import com.google.bitcoin.store.BlockStore;
-import com.google.bitcoin.store.BlockStoreException;
-import com.google.bitcoin.store.SPVBlockStore;
+import com.google.zetacoin.core.AbstractPeerEventListener;
+import com.google.zetacoin.core.Address;
+import com.google.zetacoin.core.Block;
+import com.google.zetacoin.core.BlockChain;
+import com.google.zetacoin.core.CheckpointManager;
+import com.google.zetacoin.core.Peer;
+import com.google.zetacoin.core.PeerEventListener;
+import com.google.zetacoin.core.PeerGroup;
+import com.google.zetacoin.core.ScriptException;
+import com.google.zetacoin.core.Sha256Hash;
+import com.google.zetacoin.core.StoredBlock;
+import com.google.zetacoin.core.Transaction;
+import com.google.zetacoin.core.TransactionConfidence.ConfidenceType;
+import com.google.zetacoin.core.Wallet;
+import com.google.zetacoin.core.Wallet.BalanceType;
+import com.google.zetacoin.core.WalletEventListener;
+import com.google.zetacoin.net.discovery.DnsDiscovery;
+import com.google.zetacoin.net.discovery.PeerDiscovery;
+import com.google.zetacoin.net.discovery.PeerDiscoveryException;
+import com.google.zetacoin.script.Script;
+import com.google.zetacoin.store.BlockStore;
+import com.google.zetacoin.store.BlockStoreException;
+import com.google.zetacoin.store.SPVBlockStore;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import de.schildbach.wallet.AddressBookProvider;
 import de.schildbach.wallet.Constants;
@@ -179,7 +180,12 @@ public class BlockchainServiceImpl extends android.app.Service implements Blockc
 		{
 			transactionsReceived.incrementAndGet();
 		}
-	};
+
+        @Override
+        public void onScriptsAdded(Wallet wallet, List<Script> scripts) {
+
+        }
+    };
 
 	private void notifyCoinsReceived(@Nullable final Address from, @Nonnull final BigInteger amount)
 	{

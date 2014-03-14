@@ -43,7 +43,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.bitcoin.core.Wallet;
+import com.google.zetacoin.core.Wallet;
 
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.ExchangeRatesProvider;

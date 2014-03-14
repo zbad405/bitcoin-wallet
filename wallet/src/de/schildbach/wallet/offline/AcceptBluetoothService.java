@@ -32,10 +32,10 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.text.format.DateUtils;
 
-import com.google.bitcoin.core.ProtocolException;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.VerificationException;
-import com.google.bitcoin.core.Wallet;
+import com.google.zetacoin.core.ProtocolException;
+import com.google.zetacoin.core.Transaction;
+import com.google.zetacoin.core.VerificationException;
+import com.google.zetacoin.core.Wallet;
 
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.WalletApplication;

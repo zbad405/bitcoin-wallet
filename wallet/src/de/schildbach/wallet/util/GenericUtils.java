@@ -23,7 +23,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import com.google.bitcoin.core.NetworkParameters;
+import com.google.zetacoin.core.NetworkParameters;
 
 /**
  * @author Andreas Schildbach

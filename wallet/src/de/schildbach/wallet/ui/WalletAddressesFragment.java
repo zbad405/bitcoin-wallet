@@ -46,12 +46,12 @@ import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.bitcoin.core.AbstractWalletEventListener;
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.WalletEventListener;
-import com.google.bitcoin.uri.BitcoinURI;
+import com.google.zetacoin.core.AbstractWalletEventListener;
+import com.google.zetacoin.core.Address;
+import com.google.zetacoin.core.ECKey;
+import com.google.zetacoin.core.Wallet;
+import com.google.zetacoin.core.WalletEventListener;
+import com.google.zetacoin.uri.BitcoinURI;
 
 import de.schildbach.wallet.AddressBookProvider;
 import de.schildbach.wallet.Constants;

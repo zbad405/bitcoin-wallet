@@ -17,16 +17,6 @@
 
 package de.schildbach.wallet.ui;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -39,14 +29,24 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.ScriptException;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.Transaction.Purpose;
-import com.google.bitcoin.core.TransactionConfidence;
-import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
-import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.Wallet.DefaultCoinSelector;
+import com.google.zetacoin.core.Address;
+import com.google.zetacoin.core.ScriptException;
+import com.google.zetacoin.core.Transaction;
+import com.google.zetacoin.core.Transaction.Purpose;
+import com.google.zetacoin.core.TransactionConfidence;
+import com.google.zetacoin.core.TransactionConfidence.ConfidenceType;
+import com.google.zetacoin.core.Wallet;
+import com.google.zetacoin.wallet.DefaultCoinSelector;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import de.schildbach.wallet.AddressBookProvider;
 import de.schildbach.wallet.Constants;

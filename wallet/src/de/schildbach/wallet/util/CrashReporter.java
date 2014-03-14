@@ -45,9 +45,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.TransactionOutput;
-import com.google.bitcoin.core.Wallet;
+import com.google.zetacoin.core.Transaction;
+import com.google.zetacoin.core.TransactionOutput;
+import com.google.zetacoin.core.Wallet;
 
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.WalletApplication;

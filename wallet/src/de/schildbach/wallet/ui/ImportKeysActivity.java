@@ -38,8 +38,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.Wallet;
+import com.google.zetacoin.core.ECKey;
+import com.google.zetacoin.core.Wallet;
 
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.util.Crypto;

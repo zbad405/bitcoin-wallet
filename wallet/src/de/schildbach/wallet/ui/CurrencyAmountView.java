@@ -45,7 +45,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-import com.google.bitcoin.core.Transaction;
+import com.google.zetacoin.core.Transaction;
 
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.util.GenericUtils;
