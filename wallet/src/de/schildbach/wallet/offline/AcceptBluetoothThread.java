@@ -17,6 +17,13 @@
 
 package de.schildbach.wallet.offline;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,12 +31,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
 import de.schildbach.wallet.util.Bluetooth;
 
 /**
@@ -47,7 +48,7 @@ public abstract class AcceptBluetoothThread extends Thread
 	{
 		try
 		{
-			this.listeningSocket = adapter.listenUsingInsecureRfcommWithServiceRecord("Bitcoin Transaction Submission", Bluetooth.BLUETOOTH_UUID);
+			this.listeningSocket = adapter.listenUsingInsecureRfcommWithServiceRecord("Zetacoin Transaction Submission", Bluetooth.BLUETOOTH_UUID);
 		}
 		catch (final IOException x)
 		{
