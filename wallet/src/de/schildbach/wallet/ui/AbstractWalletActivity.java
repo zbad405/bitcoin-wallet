@@ -34,7 +34,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.WalletApplication;
-import de.schildbach.wallet_test.R;
+import cc.zetacoin.wallet_test.R;
 
 /**
  * @author Andreas Schildbach

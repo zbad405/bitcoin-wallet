@@ -17,10 +17,6 @@
 
 package de.schildbach.wallet;
 
-import java.io.File;
-import java.math.BigInteger;
-import java.nio.charset.Charset;
-
 import android.os.Environment;
 import android.text.format.DateUtils;
 
@@ -28,7 +24,10 @@ import com.google.zetacoin.core.NetworkParameters;
 import com.google.zetacoin.params.MainNetParams;
 import com.google.zetacoin.params.TestNet3Params;
 
-import de.schildbach.wallet_test.R;
+import java.io.File;
+import java.nio.charset.Charset;
+
+import cc.zetacoin.wallet_test.R;
 
 /**
  * @author Andreas Schildbach
@@ -47,7 +46,7 @@ public class Constants
 	public static final String WALLET_KEY_BACKUP_BASE58 = "key-backup-base58" + FILENAME_NETWORK_SUFFIX;
 
 	public static final File EXTERNAL_WALLET_BACKUP_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-	public static final String EXTERNAL_WALLET_KEY_BACKUP = "bitcoin-wallet-keys" + FILENAME_NETWORK_SUFFIX;
+	public static final String EXTERNAL_WALLET_KEY_BACKUP = "zetacoin-wallet-keys" + FILENAME_NETWORK_SUFFIX;
 
 	public static final String BLOCKCHAIN_FILENAME = "blockchain" + FILENAME_NETWORK_SUFFIX;
 

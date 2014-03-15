@@ -51,7 +51,7 @@ import com.google.zetacoin.core.VersionMessage;
 
 import de.schildbach.wallet.service.BlockchainService;
 import de.schildbach.wallet.service.BlockchainServiceImpl;
-import de.schildbach.wallet_test.R;
+import cc.zetacoin.wallet_test.R;
 
 /**
  * @author Andreas Schildbach

@@ -42,7 +42,7 @@ import com.google.zetacoin.uri.BitcoinURIParseException;
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.util.Bluetooth;
 import de.schildbach.wallet.util.Qr;
-import de.schildbach.wallet_test.R;
+import cc.zetacoin.wallet_test.R;
 
 /**
  * @author Andreas Schildbach

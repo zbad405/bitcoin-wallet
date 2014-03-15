@@ -22,7 +22,7 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
 
-import de.schildbach.wallet_test.R;
+import cc.zetacoin.wallet_test.R;
 
 /**
  * @author Andreas Schildbach

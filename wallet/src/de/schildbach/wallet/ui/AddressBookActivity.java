@@ -35,7 +35,7 @@ import com.google.zetacoin.core.ECKey;
 
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.util.ViewPagerTabs;
-import de.schildbach.wallet_test.R;
+import cc.zetacoin.wallet_test.R;
 
 /**
  * @author Andreas Schildbach
