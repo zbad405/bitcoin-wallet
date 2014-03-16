@@ -169,11 +169,11 @@
 
 		<provider
 			android:name="de.schildbach.wallet.AddressBookProvider"
-			android:authorities="de.schildbach.wallet_test.address_book"
+			android:authorities="cc.zetacoin.wallet.address_book"
 			android:exported="false" />
 		<provider
 			android:name="de.schildbach.wallet.ExchangeRatesProvider"
-			android:authorities="de.schildbach.wallet_test.exchange_rates"
+			android:authorities="cc.zetacoin.wallet.exchange_rates"
 			android:exported="false" />
 
 		<receiver
