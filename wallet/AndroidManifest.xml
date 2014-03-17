@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="cc.zetacoin.wallet_test"
     android:installLocation="internalOnly"
     android:versionCode="151"
-    android:versionName="3.30-test" >
+    android:versionName="3.30-test" >-->
 
-<!--<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="cc.zetacoin.wallet"
     android:installLocation="internalOnly"
     android:versionCode="151"
-    android:versionName="3.30" >-->
+    android:versionName="3.30" >
 
 	<uses-sdk
 		android:minSdkVersion="10"

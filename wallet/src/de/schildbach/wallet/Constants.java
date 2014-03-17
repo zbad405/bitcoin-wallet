@@ -27,8 +27,8 @@ import com.google.zetacoin.params.TestNet3Params;
 import java.io.File;
 import java.nio.charset.Charset;
 
-import cc.zetacoin.wallet_test.R;
-//import cc.zetacoin.wallet.R;
+//import cc.zetacoin.wallet_test.R;
+import cc.zetacoin.wallet.R;
 
 /**
  * @author Andreas Schildbach
@@ -78,9 +78,9 @@ public class Constants
 	public static final int ADDRESS_FORMAT_GROUP_SIZE = 4;
 	public static final int ADDRESS_FORMAT_LINE_SIZE = 12;
 
-	public static final int BTC_MAX_PRECISION = 8;
-	public static final int MBTC_MAX_PRECISION = 5;
-	public static final int LOCAL_PRECISION = 4;
+	public static final int BTC_MAX_PRECISION = 16; //bitcoin: 8
+	public static final int MBTC_MAX_PRECISION = 13; //5
+	public static final int LOCAL_PRECISION = 8; //4
 
 	public static final String DONATION_ADDRESS = "ZYyhXSdrsGdZe9guGnZ3TbUi9cywrz2aZj";
 	public static final String REPORT_EMAIL = "derfshaya@gmail.com";

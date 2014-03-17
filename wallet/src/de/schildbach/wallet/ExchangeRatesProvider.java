@@ -21,6 +21,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -87,6 +88,8 @@ public class ExchangeRatesProvider extends ContentProvider
 	private static final String[] BITCOINCHARTS_FIELDS = new String[] { "24h", "7d", "30d" };
 	private static final URL BLOCKCHAININFO_URL;
 	private static final String[] BLOCKCHAININFO_FIELDS = new String[] { "15m" };
+	private static final URL BTER_URL;
+	private static final String[] BTER_FIELDS = new String[] { "avg" };
 
 	// https://bitmarket.eu/api/ticker
 
@@ -97,6 +100,7 @@ public class ExchangeRatesProvider extends ContentProvider
 			BITCOINAVERAGE_URL = new URL("https://api.bitcoinaverage.com/ticker/all");
 			BITCOINCHARTS_URL = new URL("http://api.bitcoincharts.com/v1/weighted_prices.json");
 			BLOCKCHAININFO_URL = new URL("https://blockchain.info/ticker");
+			BTER_URL = new URL("http://data.bter.com/api/1/ticker/zet_btc");
 		}
 		catch (final MalformedURLException x)
 		{
@@ -136,6 +140,7 @@ public class ExchangeRatesProvider extends ContentProvider
 
 			if (newExchangeRates != null)
 			{
+				// TODO: Zetacoin convert (y)
 				exchangeRates = newExchangeRates;
 				lastUpdated = now;
 			}
@@ -246,7 +251,11 @@ public class ExchangeRatesProvider extends ContentProvider
 				Io.copy(reader, content);
 
 				final Map<String, ExchangeRate> rates = new TreeMap<String, ExchangeRate>();
+				
+				final BigDecimal zet = requestZetacoinRates(BTER_URL,BTER_FIELDS);
 
+				rates.put("#BTC", new ExchangeRate("#BTC", zet.movePointRight(8).toBigIntegerExact(), "http://bter.com"));
+				
 				final JSONObject head = new JSONObject(content.toString());
 				for (final Iterator<String> i = head.keys(); i.hasNext();)
 				{
@@ -254,7 +263,7 @@ public class ExchangeRatesProvider extends ContentProvider
 					if (!"timestamp".equals(currencyCode))
 					{
 						final JSONObject o = head.getJSONObject(currencyCode);
-
+						
 						for (final String field : fields)
 						{
 							final String rateStr = o.optString(field, null);
@@ -262,18 +271,23 @@ public class ExchangeRatesProvider extends ContentProvider
 							if (rateStr != null)
 							{
 								try
-								{
-									final BigInteger rate = GenericUtils.toNanoCoins(rateStr, 0);
-
-									if (rate.signum() > 0)
+								{	
+									BigDecimal rate = new BigDecimal(rateStr);
+									BigDecimal result = rate.multiply(zet);
+									
+									if (result.signum() > 0)
 									{
-										rates.put(currencyCode, new ExchangeRate(currencyCode, rate, url.getHost()));
+										rates.put(currencyCode, new ExchangeRate(currencyCode, result.movePointRight(8).toBigInteger(), url.getHost()));
 										break;
 									}
 								}
 								catch (final ArithmeticException x)
 								{
 									log.warn("problem fetching exchange rate: " + currencyCode, x);
+								}
+								catch (Exception x)
+								{
+									log.warn("problem fetching ZET", x);
 								}
 							}
 						}
@@ -283,6 +297,82 @@ public class ExchangeRatesProvider extends ContentProvider
 				log.info("fetched exchange rates from " + url + ", took " + (System.currentTimeMillis() - start) + " ms");
 
 				return rates;
+			}
+			else
+			{
+				log.warn("http status " + responseCode + " when fetching " + url);
+			}
+		}
+		catch (final Exception x)
+		{
+			log.warn("problem fetching exchange rates", x);
+		}
+		finally
+		{
+			if (reader != null)
+			{
+				try
+				{
+					reader.close();
+				}
+				catch (final IOException x)
+				{
+					// swallow
+				}
+			}
+
+			if (connection != null)
+				connection.disconnect();
+		}
+
+		return null;
+	}
+	
+	
+	private static BigDecimal requestZetacoinRates(final URL url, final String... fields)
+	{
+		final long start = System.currentTimeMillis();
+
+		HttpURLConnection connection = null;
+		Reader reader = null;
+
+		try
+		{
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setConnectTimeout(Constants.HTTP_TIMEOUT_MS);
+			connection.setReadTimeout(Constants.HTTP_TIMEOUT_MS);
+			connection.connect();
+
+			final int responseCode = connection.getResponseCode();
+			if (responseCode == HttpURLConnection.HTTP_OK)
+			{
+				reader = new InputStreamReader(new BufferedInputStream(connection.getInputStream(), 1024), Constants.UTF_8);
+				final StringBuilder content = new StringBuilder();
+				Io.copy(reader, content);
+
+				BigDecimal rate = null;
+
+				final JSONObject o = new JSONObject(content.toString());
+				
+				for (final String field : fields)
+				{
+					final String rateStr = o.optString(field, null);
+
+					if (rateStr != null)
+					{
+						try
+						{
+							rate = new BigDecimal(rateStr);
+						}
+						catch (final ArithmeticException x)
+						{
+							log.warn("problem fetching exchange rate: ZET", x);
+						}
+					}
+				}
+				log.info("fetched exchange rates from " + url + ", took " + (System.currentTimeMillis() - start) + " ms");
+
+				return rate;
 			}
 			else
 			{
