@@ -27,8 +27,8 @@ import com.google.zetacoin.params.TestNet3Params;
 import java.io.File;
 import java.nio.charset.Charset;
 
-//import cc.zetacoin.wallet_test.R;
-import cc.zetacoin.wallet.R;
+import cc.zetacoin.wallet_test.R;
+//import cc.zetacoin.wallet.R;
 
 /**
  * @author Andreas Schildbach
