@@ -283,6 +283,7 @@ public final class ExchangeRatesFragment extends SherlockListFragment implements
 		{
 			final ExchangeRate exchangeRate = ExchangeRatesProvider.getExchangeRate(cursor);
 			final boolean isDefaultCurrency = exchangeRate.currencyCode.equals(defaultCurrency);
+            final boolean isBTC = exchangeRate.currencyCode.equals("#BTC");
 
 			view.setBackgroundResource(isDefaultCurrency ? R.color.bg_list_selected : R.color.bg_list);
 
@@ -293,11 +294,11 @@ public final class ExchangeRatesFragment extends SherlockListFragment implements
 			currencyCodeView.setText(exchangeRate.currencyCode);
 
 			final CurrencyTextView rateView = (CurrencyTextView) view.findViewById(R.id.exchange_rate_row_rate);
-			rateView.setPrecision(Constants.LOCAL_PRECISION, 0);
+			rateView.setPrecision(isBTC ? Constants.BTC_MAX_PRECISION : Constants.LOCAL_PRECISION, 0);
 			rateView.setAmount(WalletUtils.localValue(rateBase, exchangeRate.rate));
 
 			final CurrencyTextView walletView = (CurrencyTextView) view.findViewById(R.id.exchange_rate_row_balance);
-			walletView.setPrecision(Constants.LOCAL_PRECISION, 0);
+			walletView.setPrecision(isBTC ? Constants.BTC_MAX_PRECISION : Constants.LOCAL_PRECISION, 0);
 			if (!replaying)
 			{
 				walletView.setAmount(WalletUtils.localValue(balance, exchangeRate.rate));

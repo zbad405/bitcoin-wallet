@@ -136,7 +136,6 @@ public final class WalletBalanceFragment extends Fragment
 			viewBalanceLocalFrame.setForeground(getResources().getDrawable(R.drawable.dropdown_ic_arrow_small));
 
 		viewBalanceLocal = (CurrencyTextView) view.findViewById(R.id.wallet_balance_local);
-		viewBalanceLocal.setPrecision(Constants.LOCAL_PRECISION, 0);
 		viewBalanceLocal.setInsignificantRelativeSize(1);
 		viewBalanceLocal.setStrikeThru(Constants.TEST);
 
@@ -235,7 +234,9 @@ public final class WalletBalanceFragment extends Fragment
 					if (exchangeRate != null)
 					{
 						final BigInteger localValue = WalletUtils.localValue(balance, exchangeRate.rate);
+                        final boolean isBTC = exchangeRate.currencyCode.equals("#BTC");
 						viewBalanceLocalFrame.setVisibility(View.VISIBLE);
+                        viewBalanceLocal.setPrecision(isBTC ? Constants.BTC_MAX_PRECISION : Constants.LOCAL_PRECISION, 0);
 						viewBalanceLocal.setPrefix(Constants.PREFIX_ALMOST_EQUAL_TO + exchangeRate.currencyCode);
 						viewBalanceLocal.setAmount(localValue);
 						viewBalanceLocal.setTextColor(getResources().getColor(R.color.fg_less_significant));
