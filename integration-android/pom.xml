@@ -9,7 +9,7 @@
 	<name>Zetacoin Integration for Android</name>
 
 	<parent>
-		<groupId>de.schildbach.wallet</groupId>
+		<groupId>cc.zetacoin.wallet</groupId>
 		<artifactId>base</artifactId>
 		<version>1</version>
 	</parent>
