@@ -83,7 +83,7 @@ public class Constants
 	public static final int LOCAL_PRECISION = 4;
 
 	public static final String DONATION_ADDRESS = "ZYyhXSdrsGdZe9guGnZ3TbUi9cywrz2aZj";
-	public static final String REPORT_EMAIL = "derfshaya@gmail.com";
+	public static final String REPORT_EMAIL = "zbad305dev@gmail.com";
 	public static final String REPORT_SUBJECT_ISSUE = "Reported issue";
 	public static final String REPORT_SUBJECT_CRASH = "Crash report";
 
@@ -93,12 +93,12 @@ public class Constants
 	public static final String CREDITS_ZETACOINJ_URL = "https://github.com/zbad405/zetacoinj";
 	public static final String CREDITS_ZXING_URL = "http://code.google.com/p/zxing/";
 	public static final String CREDITS_ICON_URL = "https://bitcointalk.org/index.php?action=profile;u=2062";
-	public static final String AUTHOR_TWITTER_URL = "https://twitter.com/#!/bitcoin_wallet";
-	public static final String AUTHOR_GOOGLEPLUS_URL = "https://profiles.google.com/andreas.schildbach";
-	public static final String COMMUNITY_GOOGLEPLUS_URL = "https://plus.google.com/communities/105515929887248493912";
+	public static final String AUTHOR_TWITTER_URL = "https://twitter.com/#!/derfshaya";
+	public static final String AUTHOR_GOOGLEPLUS_URL = "https://plus.google.com/116329830593383570329";
+	public static final String COMMUNITY_GOOGLEPLUS_URL = "https://plus.google.com/communities/115708475004293993498";
 	public static final String MARKET_APP_URL = "market://details?id=%s";
 	public static final String WEBMARKET_APP_URL = "https://play.google.com/store/apps/details?id=%s";
-	public static final String MARKET_PUBLISHER_URL = "market://search?q=pub:\"ZBAD305\"";
+	public static final String MARKET_PUBLISHER_URL = "market://search?q=pub:\"Zetacoin Builders Association District 305\"";
 
 	public static final String VERSION_URL = "http://wallet.schildbach.de/version";
 	public static final int HTTP_TIMEOUT_MS = 15 * (int) DateUtils.SECOND_IN_MILLIS;
