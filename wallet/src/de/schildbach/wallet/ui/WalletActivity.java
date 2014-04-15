@@ -225,6 +225,7 @@ public final class WalletActivity extends AbstractOnDemandServiceActivity
 		menu.findItem(R.id.wallet_options_import_keys).setEnabled(
 				Environment.MEDIA_MOUNTED.equals(externalStorageState) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(externalStorageState));
 		menu.findItem(R.id.wallet_options_export_keys).setEnabled(Environment.MEDIA_MOUNTED.equals(externalStorageState));
+        menu.findItem(R.id.wallet_options_disconnect).setVisible(prefs.getBoolean(Constants.PREFS_KEY_CONNECTIVITY_NOTIFICATION, false));
 
 		return true;
 	}
@@ -234,6 +235,10 @@ public final class WalletActivity extends AbstractOnDemandServiceActivity
 	{
 		switch (item.getItemId())
 		{
+            case R.id.wallet_options_disconnect:
+                handleDisconnect();
+                return true;
+
 			case R.id.wallet_options_request:
 				handleRequestCoins();
 				return true;
@@ -311,6 +316,12 @@ public final class WalletActivity extends AbstractOnDemandServiceActivity
 
 		prefs.edit().putBoolean(Constants.PREFS_KEY_REMIND_BACKUP, false).commit();
 	}
+
+    private void handleDisconnect()
+    {
+        getWalletApplication().stopBlockchainService();
+        finish();
+    }
 
 	@Override
 	protected Dialog onCreateDialog(final int id)
