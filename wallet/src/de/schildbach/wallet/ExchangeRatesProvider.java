@@ -88,8 +88,9 @@ public class ExchangeRatesProvider extends ContentProvider
 	private static final String[] BITCOINCHARTS_FIELDS = new String[] { "24h", "7d", "30d" };
 	private static final URL BLOCKCHAININFO_URL;
 	private static final String[] BLOCKCHAININFO_FIELDS = new String[] { "15m" };
-	private static final URL BTER_URL;
 	private static final String[] BTER_FIELDS = new String[] { "avg" };
+    private static final String[] MINTPAL_FIELDS = new String[] { "top_bid" };
+    private static final String[] CRYPTSY_FIELDS = new String[] { "lasttradeprice" };
 
 	// https://bitmarket.eu/api/ticker
 
@@ -100,7 +101,6 @@ public class ExchangeRatesProvider extends ContentProvider
 			BITCOINAVERAGE_URL = new URL("https://api.bitcoinaverage.com/ticker/all");
 			BITCOINCHARTS_URL = new URL("http://api.bitcoincharts.com/v1/weighted_prices.json");
 			BLOCKCHAININFO_URL = new URL("https://blockchain.info/ticker");
-			BTER_URL = new URL("http://data.bter.com/api/1/ticker/zet_btc");
 		}
 		catch (final MalformedURLException x)
 		{
@@ -251,10 +251,19 @@ public class ExchangeRatesProvider extends ContentProvider
 				Io.copy(reader, content);
 
 				final Map<String, ExchangeRate> rates = new TreeMap<String, ExchangeRate>();
-				
-				final BigDecimal zet = requestZetacoinRates(BTER_URL,BTER_FIELDS);
 
-				rates.put("#BTC", new ExchangeRate("#BTC", zet.movePointRight(8).toBigIntegerExact(), "http://bter.com"));
+                String source = "http://bter.com";
+                BigDecimal zet = requestZetacoinRates(ZETBTCRateSource.BTER,BTER_FIELDS);
+				if (zet == null) {
+                    zet = requestZetacoinRates(ZETBTCRateSource.MINTPAL, MINTPAL_FIELDS);
+                    source = "http://mintpal.com";
+                }
+                if (zet == null) {
+                    zet = requestZetacoinRates(ZETBTCRateSource.CRYPTSY, CRYPTSY_FIELDS);
+                    source = "http://cryptsy.com";
+                }
+
+				rates.put("#BTC", new ExchangeRate("#BTC", zet.movePointRight(8).toBigIntegerExact(), source));
 				
 				final JSONObject head = new JSONObject(content.toString());
 				for (final Iterator<String> i = head.keys(); i.hasNext();)
@@ -329,9 +338,10 @@ public class ExchangeRatesProvider extends ContentProvider
 	}
 	
 	
-	private static BigDecimal requestZetacoinRates(final URL url, final String... fields)
+	private static BigDecimal requestZetacoinRates(final ZETBTCRateSource source, final String... fields)
 	{
 		final long start = System.currentTimeMillis();
+        final URL url = source.getUrl();
 
 		HttpURLConnection connection = null;
 		Reader reader = null;
@@ -352,7 +362,9 @@ public class ExchangeRatesProvider extends ContentProvider
 
 				BigDecimal rate = null;
 
-				final JSONObject o = new JSONObject(content.toString());
+				final JSONObject o = source.getRateStringJSONObject(content.toString());
+                if (o == null)
+                    return null;
 				
 				for (final String field : fields)
 				{
@@ -403,4 +415,38 @@ public class ExchangeRatesProvider extends ContentProvider
 
 		return null;
 	}
+
+    public enum ZETBTCRateSource {
+        BTER("http://data.bter.com/api/1/ticker/zet_btc"),
+        MINTPAL("https://api.mintpal.com/v1/market/stats/ZET/BTC"),
+        CRYPTSY("http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=85");
+
+        private URL url;
+
+        ZETBTCRateSource(String url) {
+            try {
+                this.url = new URL(url);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public URL getUrl() {
+            return url;
+        }
+
+        public JSONObject getRateStringJSONObject(String json) throws JSONException {
+            if (this == BTER)
+                return new JSONObject(json);
+            else if (this == MINTPAL) {
+                JSONArray arr = new JSONArray(json);
+                return arr.length() > 0 ? arr.getJSONObject(0) : null;
+            } else if (this == CRYPTSY) {
+                JSONObject obj = new JSONObject(json);
+                JSONObject markets = obj.getJSONObject("markets");
+                return markets.getJSONObject("ZET");
+            } else
+                return null;
+        }
+    }
 }

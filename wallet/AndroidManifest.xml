@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="cc.zetacoin.wallet_test"
     android:installLocation="internalOnly"
-    android:versionCode="153"
-    android:versionName="3.30.2-test" >
+    android:versionCode="154"
+    android:versionName="3.30.3-test" >
 
 <!--<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="cc.zetacoin.wallet"
     android:installLocation="internalOnly"
-    android:versionCode="153"
-    android:versionName="3.30.2" >-->
+    android:versionCode="154"
+    android:versionName="3.30.3" >-->
 
 	<uses-sdk
 		android:minSdkVersion="10"
