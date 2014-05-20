@@ -88,8 +88,8 @@ public class ExchangeRatesProvider extends ContentProvider
 	private static final String[] BITCOINCHARTS_FIELDS = new String[] { "24h", "7d", "30d" };
 	private static final URL BLOCKCHAININFO_URL;
 	private static final String[] BLOCKCHAININFO_FIELDS = new String[] { "15m" };
-	private static final String[] BTER_FIELDS = new String[] { "avg" };
-    private static final String[] MINTPAL_FIELDS = new String[] { "top_bid" };
+	private static final String[] BTER_FIELDS = new String[] { "last" };
+    private static final String[] MINTPAL_FIELDS = new String[] { "last_price" };
     private static final String[] CRYPTSY_FIELDS = new String[] { "lasttradeprice" };
 
 	// https://bitmarket.eu/api/ticker
@@ -417,14 +417,16 @@ public class ExchangeRatesProvider extends ContentProvider
 	}
 
     public enum ZETBTCRateSource {
-        BTER("http://data.bter.com/api/1/ticker/zet_btc"),
-        MINTPAL("https://api.mintpal.com/v1/market/stats/ZET/BTC"),
-        CRYPTSY("http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=85");
+        BTER("BTER", "https://data.bter.com/api/1/ticker/zet_btc"),
+        MINTPAL("Mintpal", "https://api.mintpal.com/v1/market/stats/ZET/BTC"),
+        CRYPTSY("Cryptsy", "http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=85");
 
+        private String name;
         private URL url;
 
-        ZETBTCRateSource(String url) {
+        ZETBTCRateSource(String name, String url) {
             try {
+                this.name = name;
                 this.url = new URL(url);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
