@@ -18,5 +18,17 @@
 		<item>ZET, 4 digits</item>
 		<item>mZET, 2 digits</item>
 	</string-array>
+    <string-array name="preferences_exchange_rate_method">
+        <item>BTER</item>
+        <item>Mintpal</item>
+        <item>Cryptsy</item>
+        <item>All (Average)</item>
+        <item>All (Minimum)</item>
+        <item>All (Maximum)</item>
+    </string-array>
+
+    <string name="exchange_rate_url_bter">https://data.bter.com/api/1/ticker/zet_btc</string>
+    <string name="exchange_rate_url_mintpal">https://api.mintpal.com/v1/market/stats/ZET/BTC</string>
+    <string name="exchange_rate_url_cryptsy">http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=85</string>
 
 </resources>
