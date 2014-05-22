@@ -92,6 +92,8 @@ public class ExchangeRatesProvider extends ContentProvider
     private String zetacoinRateMethodSourceName = "";
     private String[] zetacoinRateMethods = null;
 	private long lastUpdated = 0;
+    private long lastUpdatedZET = 0;
+    private SharedPreferences prefs;
 
 	private static final URL BITCOINAVERAGE_URL;
 	private static final String[] BITCOINAVERAGE_FIELDS = new String[] { "24h_avg" };
@@ -123,7 +125,8 @@ public class ExchangeRatesProvider extends ContentProvider
 	@Override
 	public boolean onCreate()
 	{
-		return true;
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        return true;
 	}
 
 	public static Uri contentUri(@Nonnull final String packageName)
@@ -340,30 +343,34 @@ public class ExchangeRatesProvider extends ContentProvider
     private BigDecimal getZetacoinRate() {
         final long now = System.currentTimeMillis();
 
-        if (zetacoinRate == null) {
-            // TODO: obtain preferred method from preferences
-            // TODO: set method name
-            // TODO: upon failure from single source method, use average
-            // TODO: set now and zetacoinRate at the end
-            // String source = "http://bter.com";
-            // BigDecimal zet = requestZetacoinRates(ZETBTCRateMethod.BTER,BTER_FIELDS);
-			// if (zet == null) {
-            //     zet = requestZetacoinRates(ZETBTCRateMethod.MINTPAL, MINTPAL_FIELDS);
-            //     source = "http://mintpal.com";
-            // }
-            // if (zet == null) {
-            //     zet = requestZetacoinRates(ZETBTCRateMethod.CRYPTSY, CRYPTSY_FIELDS);
-            //     source = "http://cryptsy.com";
-            // }
+        if (zetacoinRate == null || now - lastUpdatedZET > UPDATE_FREQ_MS) {
+            // obtain preferred method from preferences
+            final String rateMethodNameIndexStr = prefs.getString(Constants.PREFS_KEY_EXCANGE_RATE_METHOD, Constants.PREFS_DEFAULT_EXCHANGE_RATE_METHOD);
+            ZETBTCRateMethod method = ZETBTCRateMethod.fromNameIndex(Integer.parseInt(rateMethodNameIndexStr));
+
+            // set method name
+            zetacoinRateMethodSourceName = method.getName(getZetacoinRateMethods());
+
+            // check zetacoin rate and get AVG upon failure
+            BigDecimal newZetacoinRate = requestZetacoinRates(getContext().getResources(), method);
+
+            // upon failure from single source method, use average
+            if (newZetacoinRate == null)
+                newZetacoinRate = requestZetacoinRates(getContext().getResources(), ZETBTCRateMethod.AVG);
+
+            if (newZetacoinRate != null) {
+                zetacoinRate = newZetacoinRate;
+                lastUpdatedZET = now;
+            }
         }
 
-        return new BigDecimal(0);
+        return zetacoinRate;
 
     }
 
     private String[] getZetacoinRateMethods() {
         if (zetacoinRateMethods == null)
-            zetacoinRateMethods = getContext().getResources().getStringArray(R.array.preferences_exchange_rate_method);
+            zetacoinRateMethods = getContext().getResources().getStringArray(R.array.preferences_exchange_rate_method_labels);
         return zetacoinRateMethods;
     }
 	
@@ -479,9 +486,7 @@ public class ExchangeRatesProvider extends ContentProvider
         private int fieldsArrayResId;
         private boolean rateSource = false;
 
-        ZETBTCRateMethod(int nameIndex) {
-            this.nameIndex = nameIndex;
-        }
+        ZETBTCRateMethod(int nameIndex) { this.nameIndex = nameIndex; }
 
         ZETBTCRateMethod(int nameIndex, int urlResourceId, int fieldsArrayResId) {
             this(nameIndex);
@@ -491,11 +496,14 @@ public class ExchangeRatesProvider extends ContentProvider
         }
 
         private static Set<ZETBTCRateMethod> rateSources = EnumSet.noneOf(ZETBTCRateMethod.class);
+        private static ZETBTCRateMethod[] methodIndex = new ZETBTCRateMethod[ZETBTCRateMethod.values().length];
 
         static {
-            for (ZETBTCRateMethod method : ZETBTCRateMethod.values())
+            for (ZETBTCRateMethod method : ZETBTCRateMethod.values()) {
                 if (method.rateSource)
                     rateSources.add(method);
+                methodIndex[method.nameIndex] = method;
+            }
         }
 
         public String getName(String[] methods) {
@@ -568,5 +576,6 @@ public class ExchangeRatesProvider extends ContentProvider
         public static Set<ZETBTCRateMethod> getRateSources() {
             return rateSources;
         }
+        public static ZETBTCRateMethod fromNameIndex(int nameIndex) { return methodIndex[nameIndex]; }
     }
 }

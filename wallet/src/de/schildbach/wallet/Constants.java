@@ -117,6 +117,8 @@ public class Constants
 	public static final String PREFS_KEY_LABS_BLUETOOTH_OFFLINE_TRANSACTIONS = "labs_bluetooth_offline_transactions";
 	public static final String PREFS_KEY_BTC_PRECISION = "btc_precision";
 	public static final String PREFS_DEFAULT_BTC_PRECISION = "4";
+    public static final String PREFS_KEY_EXCANGE_RATE_METHOD = "exchange_rate_method";
+    public static final String PREFS_DEFAULT_EXCHANGE_RATE_METHOD = "3";
 	public static final String PREFS_KEY_DISCLAIMER = "disclaimer";
 
 	public static final long LAST_USAGE_THRESHOLD_JUST_MS = DateUtils.HOUR_IN_MILLIS;

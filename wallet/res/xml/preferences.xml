@@ -10,6 +10,14 @@
 			android:summary="@string/preferences_precision_summary"
 			android:title="@string/preferences_precision_title" />
 
+        <ListPreference
+            android:defaultValue="3"
+            android:entries="@array/preferences_exchange_rate_method_labels"
+            android:entryValues="@array/preferences_exchange_rate_method_values"
+            android:key="exchange_rate_method"
+            android:summary="@string/preferences_exchange_rate_method_summary"
+            android:title="@string/preferences_exchange_rate_method" />
+
 		<CheckBoxPreference
 			android:defaultValue="false"
 			android:key="connectivity_notification"
