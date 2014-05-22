@@ -27,25 +27,32 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Currency;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.format.DateUtils;
+import cc.zetacoin.wallet_test.R;
 import de.schildbach.wallet.util.GenericUtils;
 import de.schildbach.wallet.util.Io;
 
@@ -80,7 +87,13 @@ public class ExchangeRatesProvider extends ContentProvider
 
 	@CheckForNull
 	private Map<String, ExchangeRate> exchangeRates = null;
+    @CheckForNull
+    private BigDecimal zetacoinRate = null;
+    private String zetacoinRateMethodSourceName = "";
+    private String[] zetacoinRateMethods = null;
 	private long lastUpdated = 0;
+    private long lastUpdatedZET = 0;
+    private SharedPreferences prefs;
 
 	private static final URL BITCOINAVERAGE_URL;
 	private static final String[] BITCOINAVERAGE_FIELDS = new String[] { "24h_avg" };
@@ -88,9 +101,6 @@ public class ExchangeRatesProvider extends ContentProvider
 	private static final String[] BITCOINCHARTS_FIELDS = new String[] { "24h", "7d", "30d" };
 	private static final URL BLOCKCHAININFO_URL;
 	private static final String[] BLOCKCHAININFO_FIELDS = new String[] { "15m" };
-	private static final String[] BTER_FIELDS = new String[] { "last" };
-    private static final String[] MINTPAL_FIELDS = new String[] { "last_price" };
-    private static final String[] CRYPTSY_FIELDS = new String[] { "lasttradeprice" };
 
 	// https://bitmarket.eu/api/ticker
 
@@ -115,7 +125,8 @@ public class ExchangeRatesProvider extends ContentProvider
 	@Override
 	public boolean onCreate()
 	{
-		return true;
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        return true;
 	}
 
 	public static Uri contentUri(@Nonnull final String packageName)
@@ -131,16 +142,19 @@ public class ExchangeRatesProvider extends ContentProvider
 		if (exchangeRates == null || now - lastUpdated > UPDATE_FREQ_MS)
 		{
 			Map<String, ExchangeRate> newExchangeRates = null;
+            BigDecimal newZetacoinRate = getZetacoinRate();
 			if (newExchangeRates == null)
-				newExchangeRates = requestExchangeRates(BITCOINAVERAGE_URL, BITCOINAVERAGE_FIELDS);
+				newExchangeRates = requestExchangeRates(newZetacoinRate, zetacoinRateMethodSourceName,
+                        BITCOINAVERAGE_URL, BITCOINAVERAGE_FIELDS);
 			if (newExchangeRates == null)
-				newExchangeRates = requestExchangeRates(BITCOINCHARTS_URL, BITCOINCHARTS_FIELDS);
+				newExchangeRates = requestExchangeRates(newZetacoinRate, zetacoinRateMethodSourceName,
+                        BITCOINCHARTS_URL, BITCOINCHARTS_FIELDS);
 			if (newExchangeRates == null)
-				newExchangeRates = requestExchangeRates(BLOCKCHAININFO_URL, BLOCKCHAININFO_FIELDS);
+				newExchangeRates = requestExchangeRates(newZetacoinRate, zetacoinRateMethodSourceName,
+                        BLOCKCHAININFO_URL, BLOCKCHAININFO_FIELDS);
 
 			if (newExchangeRates != null)
 			{
-				// TODO: Zetacoin convert (y)
 				exchangeRates = newExchangeRates;
 				lastUpdated = now;
 			}
@@ -229,7 +243,7 @@ public class ExchangeRatesProvider extends ContentProvider
 		throw new UnsupportedOperationException();
 	}
 
-	private static Map<String, ExchangeRate> requestExchangeRates(final URL url, final String... fields)
+	private static Map<String, ExchangeRate> requestExchangeRates(BigDecimal zet, String zetRateSource, final URL url, final String... fields)
 	{
 		final long start = System.currentTimeMillis();
 
@@ -252,18 +266,7 @@ public class ExchangeRatesProvider extends ContentProvider
 
 				final Map<String, ExchangeRate> rates = new TreeMap<String, ExchangeRate>();
 
-                String source = "http://bter.com";
-                BigDecimal zet = requestZetacoinRates(ZETBTCRateSource.BTER,BTER_FIELDS);
-				if (zet == null) {
-                    zet = requestZetacoinRates(ZETBTCRateSource.MINTPAL, MINTPAL_FIELDS);
-                    source = "http://mintpal.com";
-                }
-                if (zet == null) {
-                    zet = requestZetacoinRates(ZETBTCRateSource.CRYPTSY, CRYPTSY_FIELDS);
-                    source = "http://cryptsy.com";
-                }
-
-				rates.put("#BTC", new ExchangeRate("#BTC", zet.movePointRight(8).toBigIntegerExact(), source));
+				rates.put("#BTC", new ExchangeRate("#BTC", zet.movePointRight(8).toBigIntegerExact(), zetRateSource));
 				
 				final JSONObject head = new JSONObject(content.toString());
 				for (final Iterator<String> i = head.keys(); i.hasNext();)
@@ -336,13 +339,65 @@ public class ExchangeRatesProvider extends ContentProvider
 
 		return null;
 	}
+
+    private BigDecimal getZetacoinRate() {
+        final long now = System.currentTimeMillis();
+
+        if (zetacoinRate == null || now - lastUpdatedZET > UPDATE_FREQ_MS) {
+            // obtain preferred method from preferences
+            final String rateMethodNameIndexStr = prefs.getString(Constants.PREFS_KEY_EXCANGE_RATE_METHOD, Constants.PREFS_DEFAULT_EXCHANGE_RATE_METHOD);
+            ZETBTCRateMethod method = ZETBTCRateMethod.fromNameIndex(Integer.parseInt(rateMethodNameIndexStr));
+
+            // set method name
+            zetacoinRateMethodSourceName = method.getName(getZetacoinRateMethods());
+
+            // check zetacoin rate and get AVG upon failure
+            BigDecimal newZetacoinRate = requestZetacoinRates(getContext().getResources(), method);
+
+            // upon failure from single source method, use average
+            if (newZetacoinRate == null)
+                newZetacoinRate = requestZetacoinRates(getContext().getResources(), ZETBTCRateMethod.AVG);
+
+            if (newZetacoinRate != null) {
+                zetacoinRate = newZetacoinRate;
+                lastUpdatedZET = now;
+            }
+        }
+
+        return zetacoinRate;
+
+    }
+
+    private String[] getZetacoinRateMethods() {
+        if (zetacoinRateMethods == null)
+            zetacoinRateMethods = getContext().getResources().getStringArray(R.array.preferences_exchange_rate_method_labels);
+        return zetacoinRateMethods;
+    }
 	
-	
-	private static BigDecimal requestZetacoinRates(final ZETBTCRateSource source, final String... fields)
+	private static BigDecimal requestZetacoinRates(Resources res, final ZETBTCRateMethod method)
 	{
 		final long start = System.currentTimeMillis();
-        final URL url = source.getUrl();
 
+        // if rate method is an aggregation (not a source)
+        if (!method.rateSource) {
+            Set<ZETBTCRateMethod> rateSources = ZETBTCRateMethod.getRateSources();
+            Map<ZETBTCRateMethod, BigDecimal> rateCache =
+                    new EnumMap<ZETBTCRateMethod, BigDecimal>(ZETBTCRateMethod.class);
+
+            // obtain rates from every source and put htem in the cache
+            for (ZETBTCRateMethod rateSource : rateSources) {
+                BigDecimal zetaRate = requestZetacoinRates(res, rateSource);
+                if (zetaRate != null)
+                    rateCache.put(rateSource, zetaRate);
+            }
+
+            // use the cache for aggregation of rates (return null if cache is empty)
+            if (rateCache.size() <= 0) return null;
+            return method.getAggregatedValue(rateCache.values().toArray(new BigDecimal[rateCache.size()]));
+        }
+
+        final URL url = method.getUrl(res);
+        final String[] fields = method.getFields(res);
 		HttpURLConnection connection = null;
 		Reader reader = null;
 
@@ -362,7 +417,7 @@ public class ExchangeRatesProvider extends ContentProvider
 
 				BigDecimal rate = null;
 
-				final JSONObject o = source.getRateStringJSONObject(content.toString());
+				final JSONObject o = method.getRateStringJSONObject(content.toString());
                 if (o == null)
                     return null;
 				
@@ -416,39 +471,111 @@ public class ExchangeRatesProvider extends ContentProvider
 		return null;
 	}
 
-    public enum ZETBTCRateSource {
-        BTER("BTER", "https://data.bter.com/api/1/ticker/zet_btc"),
-        MINTPAL("Mintpal", "https://api.mintpal.com/v1/market/stats/ZET/BTC"),
-        CRYPTSY("Cryptsy", "http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=85");
+    public enum ZETBTCRateMethod {
+        AVG(0), MIN(1), MAX(2),
 
-        private String name;
-        private URL url;
+        BTER(3, R.string.exchange_rate_url_bter,
+                R.array.exchange_rate_fields_bter),
+        MINTPAL(4, R.string.exchange_rate_url_mintpal,
+                R.array.exchange_rate_fields_mintpal),
+        CRYPTSY(5, R.string.exchange_rate_url_cryptsy,
+                R.array.exchange_rate_fields_cryptsy);
 
-        ZETBTCRateSource(String name, String url) {
-            try {
-                this.name = name;
-                this.url = new URL(url);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+        private int nameIndex;
+        private int urlResourceId;
+        private int fieldsArrayResId;
+        private boolean rateSource = false;
+
+        ZETBTCRateMethod(int nameIndex) { this.nameIndex = nameIndex; }
+
+        ZETBTCRateMethod(int nameIndex, int urlResourceId, int fieldsArrayResId) {
+            this(nameIndex);
+            this.urlResourceId = urlResourceId;
+            this.fieldsArrayResId = fieldsArrayResId;
+            this.rateSource = true;
+        }
+
+        private static Set<ZETBTCRateMethod> rateSources = EnumSet.noneOf(ZETBTCRateMethod.class);
+        private static ZETBTCRateMethod[] methodIndex = new ZETBTCRateMethod[ZETBTCRateMethod.values().length];
+
+        static {
+            for (ZETBTCRateMethod method : ZETBTCRateMethod.values()) {
+                if (method.rateSource)
+                    rateSources.add(method);
+                methodIndex[method.nameIndex] = method;
             }
         }
 
-        public URL getUrl() {
+        public String getName(String[] methods) {
+            return methods[nameIndex];
+        }
+
+        public URL getUrl(Resources resources) {
+            final String urlString = resources.getString(urlResourceId);
+            URL url = null;
+            try {
+                url = new URL(urlString);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
             return url;
         }
 
-        public JSONObject getRateStringJSONObject(String json) throws JSONException {
-            if (this == BTER)
-                return new JSONObject(json);
-            else if (this == MINTPAL) {
-                JSONArray arr = new JSONArray(json);
-                return arr.length() > 0 ? arr.getJSONObject(0) : null;
-            } else if (this == CRYPTSY) {
-                JSONObject obj = new JSONObject(json);
-                JSONObject markets = obj.getJSONObject("markets");
-                return markets.getJSONObject("ZET");
-            } else
-                return null;
+        public String[] getFields(Resources resources) {
+            return resources.getStringArray(fieldsArrayResId);
         }
+
+        public JSONObject getRateStringJSONObject(String json) throws JSONException {
+            switch (this) {
+                case BTER:
+                    return new JSONObject(json);
+                case MINTPAL:
+                    JSONArray arr = new JSONArray(json);
+                    return arr.length() > 0 ? arr.getJSONObject(0) : null;
+                case CRYPTSY:
+                    JSONObject obj = new JSONObject(json);
+                    JSONObject markets = obj.getJSONObject("markets");
+                    return markets.getJSONObject("ZET");
+                default:
+                    return null;
+            }
+        }
+
+        public BigDecimal getAggregatedValue(BigDecimal[] values) {
+            if (values == null)
+                return null;
+            BigDecimal sum = null;
+            BigDecimal min = null;
+            BigDecimal max = null;
+            for (BigDecimal value: values) {
+                switch (this) {
+                    case AVG:
+                        if (sum == null) sum = new BigDecimal(0);
+                        sum = sum.add(value);
+                        break;
+                    case MIN:
+                        if (min == null || value.compareTo(min) < 0) min = value;
+                        break;
+                    case MAX:
+                        if (max == null || value.compareTo(max) > 0) max = value;
+                        break;
+                }
+            }
+            switch (this) {
+                case AVG:
+                    return sum != null ? sum.divide(new BigDecimal(values.length)) : null;
+                case MIN:
+                    return min;
+                case MAX:
+                    return max;
+                default:
+                    return null;
+            }
+        }
+
+        public static Set<ZETBTCRateMethod> getRateSources() {
+            return rateSources;
+        }
+        public static ZETBTCRateMethod fromNameIndex(int nameIndex) { return methodIndex[nameIndex]; }
     }
 }

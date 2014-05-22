@@ -153,6 +153,8 @@
 	<string name="preferences_category_labs">Labs</string>
 	<string name="preferences_precision_title">Denomination and precision</string>
 	<string name="preferences_precision_summary">Unit to show amounts in. This does not affect computations.</string>
+    <string name="preferences_exchange_rate_method">Exchange rate method</string>
+    <string name="preferences_exchange_rate_method_summary">Method to calculate exchange rate</string>
 	<string name="preferences_connectivity_notification_title">Connectivity Indicator</string>
 	<string name="preferences_connectivity_notification_summary">Show current number of connected peers in the notification area.</string>
 	<string name="preferences_trusted_peer_title">Trusted Peer</string>
