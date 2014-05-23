@@ -537,7 +537,8 @@ public class ExchangeRatesProvider extends ContentProvider
                     return arr.length() > 0 ? arr.getJSONObject(0) : null;
                 case CRYPTSY:
                     JSONObject obj = new JSONObject(json);
-                    JSONObject markets = obj.getJSONObject("markets");
+                    JSONObject returnObj = obj.getJSONObject("return");
+                    JSONObject markets = returnObj.getJSONObject("markets");
                     return markets.getJSONObject("ZET");
                 default:
                     return null;
