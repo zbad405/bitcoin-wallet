@@ -350,18 +350,16 @@ public class ExchangeRatesProvider extends ContentProvider
             final String rateMethodNameIndexStr = prefs.getString(Constants.PREFS_KEY_EXCANGE_RATE_METHOD, Constants.PREFS_DEFAULT_EXCHANGE_RATE_METHOD);
             ZETBTCRateMethod method = ZETBTCRateMethod.fromNameIndex(Integer.parseInt(rateMethodNameIndexStr));
 
-            // set method name
-            zetacoinRateMethodSourceName = method.getName(getZetacoinRateMethods());
-
-            // check zetacoin rate and get AVG upon failure
-            BigDecimal newZetacoinRate = requestZetacoinRates(getContext().getResources(), method);
+            // check zetacoin rate
+            Map.Entry<ZETBTCRateMethod, BigDecimal> newZetacoinRatePair = requestZetacoinRatePair(getContext().getResources(), method);
 
             // upon failure from single source method, use average
-            if (newZetacoinRate == null)
-                newZetacoinRate = requestZetacoinRates(getContext().getResources(), ZETBTCRateMethod.AVG);
+            if (newZetacoinRatePair == null)
+                newZetacoinRatePair = requestZetacoinRatePair(getContext().getResources(), ZETBTCRateMethod.AVG);
 
-            if (newZetacoinRate != null) {
-                zetacoinRate = newZetacoinRate;
+            if (newZetacoinRatePair != null) {
+                zetacoinRate = newZetacoinRatePair.getValue();
+                zetacoinRateMethodSourceName = newZetacoinRatePair.getKey().getName(getZetacoinRateMethods());
                 lastUpdatedZET = now;
             }
         }
@@ -376,7 +374,7 @@ public class ExchangeRatesProvider extends ContentProvider
         return zetacoinRateMethods;
     }
 	
-	private static BigDecimal requestZetacoinRates(Resources res, final ZETBTCRateMethod method)
+	private static Map.Entry<ZETBTCRateMethod, BigDecimal> requestZetacoinRatePair(Resources res, final ZETBTCRateMethod method)
 	{
 		final long start = System.currentTimeMillis();
 
@@ -388,14 +386,14 @@ public class ExchangeRatesProvider extends ContentProvider
 
             // obtain rates from every source and put htem in the cache
             for (ZETBTCRateMethod rateSource : rateSources) {
-                BigDecimal zetaRate = requestZetacoinRates(res, rateSource);
-                if (zetaRate != null)
-                    rateCache.put(rateSource, zetaRate);
+                Map.Entry<ZETBTCRateMethod, BigDecimal> zetaRatePair = requestZetacoinRatePair(res, rateSource);
+                if (zetaRatePair != null)
+                    rateCache.put(zetaRatePair.getKey(), zetaRatePair.getValue());
             }
 
             // use the cache for aggregation of rates (return null if cache is empty)
             if (rateCache.size() <= 0) return null;
-            return method.getAggregatedValue(rateCache.values().toArray(new BigDecimal[rateCache.size()]));
+            return method.getAggregatedValue(rateCache);
         }
 
         final URL url = method.getUrl(res);
@@ -441,7 +439,10 @@ public class ExchangeRatesProvider extends ContentProvider
 				}
 				log.info("fetched exchange rates from " + url + ", took " + (System.currentTimeMillis() - start) + " ms");
 
-				return rate;
+                if (rate == null) return null;
+                Map<ZETBTCRateMethod, BigDecimal> rateMap = new EnumMap<ZETBTCRateMethod, BigDecimal>(ZETBTCRateMethod.class);
+                rateMap.put(method, rate);
+                return rateMap.entrySet().iterator().next();
 			}
 			else
 			{
@@ -543,33 +544,41 @@ public class ExchangeRatesProvider extends ContentProvider
             }
         }
 
-        public BigDecimal getAggregatedValue(BigDecimal[] values) {
+        public Map.Entry<ZETBTCRateMethod, BigDecimal> getAggregatedValue(Map<ZETBTCRateMethod, BigDecimal> values) {
             if (values == null)
                 return null;
             BigDecimal sum = null;
-            BigDecimal min = null;
-            BigDecimal max = null;
-            for (BigDecimal value: values) {
+            BigDecimal value;
+            Map.Entry<ZETBTCRateMethod, BigDecimal> minValuePair = null;
+            Map.Entry<ZETBTCRateMethod, BigDecimal> maxValuePair = null;
+            for (Map.Entry<ZETBTCRateMethod, BigDecimal> valuePair : values.entrySet()) {
+                value = valuePair.getValue();
                 switch (this) {
                     case AVG:
                         if (sum == null) sum = new BigDecimal(0);
                         sum = sum.add(value);
                         break;
                     case MIN:
-                        if (min == null || value.compareTo(min) < 0) min = value;
+                        if (minValuePair == null || value.compareTo(minValuePair.getValue()) < 0)
+                            minValuePair = valuePair;
                         break;
                     case MAX:
-                        if (max == null || value.compareTo(max) > 0) max = value;
+                        if (maxValuePair == null || value.compareTo(maxValuePair.getValue()) > 0)
+                            maxValuePair = valuePair;
                         break;
                 }
             }
             switch (this) {
                 case AVG:
-                    return sum != null ? sum.divide(new BigDecimal(values.length)) : null;
+                    Map<ZETBTCRateMethod, BigDecimal> avgPairMap =
+                            new EnumMap<ZETBTCRateMethod, BigDecimal>(ZETBTCRateMethod.class);
+                    if (sum != null)
+                        avgPairMap.put(AVG, sum.divide(new BigDecimal(values.size())));
+                    return avgPairMap.size() > 0 ? avgPairMap.entrySet().iterator().next() : null;
                 case MIN:
-                    return min;
+                    return minValuePair;
                 case MAX:
-                    return max;
+                    return maxValuePair;
                 default:
                     return null;
             }
