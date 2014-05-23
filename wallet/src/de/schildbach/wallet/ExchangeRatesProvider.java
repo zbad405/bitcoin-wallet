@@ -354,7 +354,7 @@ public class ExchangeRatesProvider extends ContentProvider
             Map.Entry<ZETBTCRateMethod, BigDecimal> newZetacoinRatePair = requestZetacoinRatePair(getContext().getResources(), method);
 
             // upon failure from single source method, use average
-            if (newZetacoinRatePair == null)
+            if (method.rateSource && newZetacoinRatePair == null)
                 newZetacoinRatePair = requestZetacoinRatePair(getContext().getResources(), ZETBTCRateMethod.AVG);
 
             if (newZetacoinRatePair != null) {
